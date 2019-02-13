@@ -12,9 +12,21 @@ class ClientDetails extends Component {
 
     if (client) {
       return (
-        <div>
-          <h1>Details</h1>
-          <h2>{client.firstName}</h2>
+        <div className="row">
+          <div className="col-md-6">
+            <Link to="/" className="btn btn-link">
+              <i className="fas fa-arrow-circle-left" />
+              Back to Dashboard
+            </Link>
+          </div>
+          <div className="col-md-6">
+            <div className="btn-group float-right">
+              <Link to={`/client/edit/${client.id}`} className="btn btn-dark">
+                edit
+              </Link>
+              <button className="btn btn-danger">Delete</button>
+            </div>
+          </div>
         </div>
       );
     } else {
