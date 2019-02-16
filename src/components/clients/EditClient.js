@@ -20,24 +20,13 @@ class EditClient extends Component {
     const { client, firestore, history } = this.props;
     const { firstName, lastName, email, phone } = this.state;
 
-    let clientEdits = {};
-
-    //If something is put in the input field, added to the clientEdits object. Otherwise the value is not changed.
-    if (firstName !== "") {
-      clientEdits.firstName = firstName;
-    }
-
-    if (lastName !== "") {
-      clientEdits.lastName = lastName;
-    }
-
-    if (phone !== "") {
-      clientEdits.phone = phone;
-    }
-
-    if (email !== "") {
-      clientEdits.email = email;
-    }
+    let clientEdits = {
+      //If something is put in the input field, added to the clientEdits object. Otherwise the value is not changed from what is in Firestore (aka client.[whatever]).
+      firstName: firstName === "" ? client.firstName : firstName,
+      lastName: lastName === "" ? client.lastName : lastName,
+      email: email === "" ? client.email : email,
+      phone: phone === "" ? client.phone : phone
+    };
 
     //Update the balance in Firestore
     firestore
