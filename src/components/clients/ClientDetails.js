@@ -26,6 +26,14 @@ class ClientDetails extends Component {
     firestore.update({ collection: "clients", doc: client.id }, clientUpdate);
   };
 
+  onDeleteClick = () => {
+    alert("you're so fucking smart!");
+    const { client, firestore, history } = this.props;
+    firestore
+      .delete({ collection: "clients", doc: client.id })
+      .then(() => history.push("/"));
+  };
+
   render() {
     const { client } = this.props;
     const { showBalanceUpdate, balanceUpdateAmount } = this.state;
@@ -71,9 +79,11 @@ class ClientDetails extends Component {
             <div className="col-md-6">
               <div className="btn-group float-right">
                 <Link to={`/client/edit/${client.id}`} className="btn btn-dark">
-                  edit
+                  Edit
                 </Link>
-                <button className="btn btn-danger">Delete</button>
+                <button className="btn btn-danger" onClick={this.onDeleteClick}>
+                  Delete
+                </button>
               </div>
             </div>
           </div>
