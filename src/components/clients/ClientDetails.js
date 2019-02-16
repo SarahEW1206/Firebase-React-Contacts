@@ -27,7 +27,6 @@ class ClientDetails extends Component {
   };
 
   onDeleteClick = () => {
-    alert("you're so fucking smart!");
     const { client, firestore, history } = this.props;
     firestore
       .delete({ collection: "clients", doc: client.id })
