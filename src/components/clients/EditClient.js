@@ -14,6 +14,21 @@ class EditClient extends Component {
     phone: ""
   };
 
+  //method from Will's comments in the chat thread.
+  componentDidUpdate() {
+    const { client } = this.props;
+    //the if statement needs to be there to make sure you don't keep updating state, you'll get errors otherwise. That should let it run only the once, and once the client is loaded.
+    if (
+      client &&
+      //The Object.keys() method returns an array of a given object's own property names, in the same order as we get with a normal loop.
+      //The every() method tests whether all elements in the array pass the test implemented by the provided function.
+
+      Object.keys(this.state).every(index => this.state[index].length === 0)
+    ) {
+      this.setState(state => ({ ...client }));
+    }
+  }
+
   onSubmit = e => {
     e.preventDefault();
 
@@ -21,14 +36,14 @@ class EditClient extends Component {
     const { firstName, lastName, email, phone } = this.state;
 
     let clientEdits = {
-      //If something is put in the input field, added to the clientEdits object. Otherwise the value is not changed from what is in Firestore (aka client.[whatever]).
+      //If something is put in the input field, added to the clientEdits object. Otherwise the value is not changed from what is in Firestore (aka client.whatever).
       firstName: firstName === "" ? client.firstName : firstName,
       lastName: lastName === "" ? client.lastName : lastName,
       email: email === "" ? client.email : email,
       phone: phone === "" ? client.phone : phone
     };
 
-    //Update the balance in Firestore
+    //Update the info in Firestore
     firestore
       .update({ collection: "clients", doc: client.id }, clientEdits)
       .then(() => history.push(`/`));
