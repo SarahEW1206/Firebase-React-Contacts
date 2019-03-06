@@ -1,32 +1,43 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-// import { compose } from "redux";
-// import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
-// import Spinner from "../layout/Spinner";
 
-class LogIn extends Component {
+class SignUp extends Component {
   state = {
     email: "",
-    password: ""
+    password: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    balance: "0"
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
-  onSubmit = e => {
+  onCreate = e => {
     e.preventDefault();
-
-    const { firebase, history } = this.props;
-    const { email, password } = this.state;
+    const { firestore, firebase, history } = this.props;
+    const { email, password, lastName, firstName, balance } = this.state;
 
     firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then(user => {
-        console.log(user);
-        history.push("/");
+        let user_id = user.user.uid;
+        firestore
+          .collection("clients")
+          .doc(user_id)
+          .set({
+            user_id: user_id,
+            email,
+            password,
+            firstName,
+            lastName,
+            balance
+          })
+          .then(() => history.push(`/client/edit/${user_id}`));
       })
-      .catch(error => alert("Invalid login credentials"));
+      .catch(error => alert(error));
   };
 
   render() {
@@ -42,6 +53,30 @@ class LogIn extends Component {
               </h1>
               <form onSubmit={this.onCreate}>
                 <div className="form-group">
+                  <label htmlFor="firstName">First</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="firstName"
+                    required
+                    value={this.state.firstName}
+                    onChange={this.onChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="lastName">Last</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="lastName"
+                    required
+                    value={this.state.lastName}
+                    onChange={this.onChange}
+                  />
+                </div>
+
+                <div className="form-group">
                   <label htmlFor="email">Email</label>
                   <input
                     type="email"
@@ -52,6 +87,7 @@ class LogIn extends Component {
                     onChange={this.onChange}
                   />
                 </div>
+
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
                   <input
@@ -63,9 +99,10 @@ class LogIn extends Component {
                     onChange={this.onChange}
                   />
                 </div>
+
                 <input
                   type="submit"
-                  value="Login"
+                  value="CREATE"
                   className="btn btn-primary btn-block"
                 />
               </form>
@@ -77,8 +114,8 @@ class LogIn extends Component {
   }
 }
 
-LogIn.propTypes = {
+SignUp.propTypes = {
   firebase: PropTypes.object.isRequired
 };
 
-export default firestoreConnect()(LogIn);
+export default firestoreConnect()(SignUp);
